@@ -1,75 +1,40 @@
-from . import caching
-from .callbacks import Callback
-from .compression import available_compressions
-from .core import get_fs_token_paths, open, open_files, open_local, url_to_fs
-from .exceptions import FSTimeoutError
-from .mapping import FSMap, get_mapper
-from .registry import (
-    available_protocols,
-    filesystem,
-    get_filesystem_class,
-    register_implementation,
-    registry,
+# Copyright 2017 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+"""Google API Core.
+
+This package contains common code and utilities used by Google client libraries.
+"""
+
+from google.api_core import _python_package_support, _python_version_support
+from google.api_core import version as api_core_version
+
+__version__ = api_core_version.__version__
+
+# NOTE: Until dependent artifacts require this version of
+# google.api_core, the functionality below must be made available
+# manually in those artifacts.
+
+# expose dependency checks for external callers
+check_python_version = _python_version_support.check_python_version
+check_dependency_versions = _python_package_support.check_dependency_versions
+parse_version_to_tuple = _python_package_support.parse_version_to_tuple
+warn_deprecation_for_versions_less_than = (
+    _python_package_support.warn_deprecation_for_versions_less_than
 )
-from .spec import AbstractFileSystem
+DependencyConstraint = _python_package_support.DependencyConstraint
 
-try:
-    from ._version import __version__  # noqa: F401
-except ImportError:
-    __version__ = "unknown"
-
-__all__ = [
-    "AbstractFileSystem",
-    "FSTimeoutError",
-    "FSMap",
-    "filesystem",
-    "register_implementation",
-    "get_filesystem_class",
-    "get_fs_token_paths",
-    "get_mapper",
-    "open",
-    "open_files",
-    "open_local",
-    "registry",
-    "caching",
-    "Callback",
-    "available_protocols",
-    "available_compressions",
-    "url_to_fs",
-]
-
-
-def process_entries():
-    try:
-        from importlib.metadata import entry_points
-    except ImportError:
-        return
-    if entry_points is not None:
-        try:
-            eps = entry_points()
-        except TypeError:
-            pass  # importlib-metadata < 0.8
-        else:
-            if hasattr(eps, "select"):  # Python 3.10+ / importlib_metadata >= 3.9.0
-                specs = eps.select(group="fsspec.specs")
-            else:
-                specs = eps.get("fsspec.specs", [])
-            registered_names = {}
-            for spec in specs:
-                err_msg = f"Unable to load filesystem from {spec}"
-                name = spec.name
-                if name in registered_names:
-                    continue
-                registered_names[name] = True
-                register_implementation(
-                    name,
-                    spec.value.replace(":", "."),
-                    errtxt=err_msg,
-                    # We take our implementations as the ones to overload with if
-                    # for some reason we encounter some, may be the same, already
-                    # registered
-                    clobber=True,
-                )
-
-
-process_entries()
+# perform version checks against api_core, and emit warnings if needed
+check_python_version(package="google.api_core")
+check_dependency_versions("google.api_core")
