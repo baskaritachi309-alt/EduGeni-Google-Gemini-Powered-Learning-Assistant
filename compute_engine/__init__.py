@@ -12,22 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Google Auth Library for Python."""
+"""Google Compute Engine authentication."""
 
-import logging
+from google.auth.compute_engine._metadata import detect_gce_residency_linux
+from google.auth.compute_engine.credentials import Credentials, IDTokenCredentials
 
-from google.auth import version as google_auth_version
-from google.auth._default import (
-    default,
-    load_credentials_from_dict,
-    load_credentials_from_file,
-)
-
-__version__ = google_auth_version.__version__
-
-
-__all__ = ["default", "load_credentials_from_file", "load_credentials_from_dict"]
-
-
-# Set default logging handler to avoid "No handler found" warnings.
-logging.getLogger(__name__).addHandler(logging.NullHandler())
+__all__ = ["Credentials", "IDTokenCredentials", "detect_gce_residency_linux"]
