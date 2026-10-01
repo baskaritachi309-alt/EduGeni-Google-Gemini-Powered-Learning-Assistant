@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2023 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +11,23 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from __future__ import annotations
+#
+"""Classes for working with vision models."""
 
-__version__ = "0.8.3"
+from google.generativeai.vision_models._vision_models import (
+    Image,
+    GeneratedImage,
+    ImageGenerationModel,
+    ImageGenerationResponse,
+    Video,
+    VideoGenerationModel,
+)
+
+__all__ = [
+    "Image",
+    "GeneratedImage",
+    "ImageGenerationModel",
+    "ImageGenerationResponse",
+    "Video",
+    "VideoGenerationModel",
+]
