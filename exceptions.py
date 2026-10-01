@@ -1,52 +1,18 @@
-# This file is dual licensed under the terms of the Apache License, Version
-# 2.0, and the BSD License. See the LICENSE file in the root of this repository
-# for complete details.
+"""
+fsspec user-defined exception classes
+"""
 
-from __future__ import annotations
-
-import typing
-
-from cryptography.hazmat.bindings._rust import exceptions as rust_exceptions
-
-if typing.TYPE_CHECKING:
-    from cryptography.hazmat.bindings._rust import openssl as rust_openssl
-
-_Reasons = rust_exceptions._Reasons
+import asyncio
 
 
-class UnsupportedAlgorithm(Exception):
-    def __init__(self, message: str, reason: _Reasons | None = None) -> None:
-        super().__init__(message)
-        self._reason = reason
+class BlocksizeMismatchError(ValueError):
+    """
+    Raised when a cached file is opened with a different blocksize than it was
+    written with
+    """
 
 
-class AlreadyFinalized(Exception):
-    pass
-
-
-class AlreadyUpdated(Exception):
-    pass
-
-
-class NotYetFinalized(Exception):
-    pass
-
-
-class InvalidTag(Exception):
-    pass
-
-
-class InvalidSignature(Exception):
-    pass
-
-
-class InternalError(Exception):
-    def __init__(
-        self, msg: str, err_code: list[rust_openssl.OpenSSLError]
-    ) -> None:
-        super().__init__(msg)
-        self.err_code = err_code
-
-
-class InvalidKey(Exception):
-    pass
+class FSTimeoutError(asyncio.TimeoutError):
+    """
+    Raised when a fsspec function timed out occurs
+    """
